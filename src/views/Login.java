@@ -122,6 +122,9 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Tên bạn nhập sai định dạng");
         }
         try {
+            String userName = txtUsername.getText();
+            new Menu(userName).setVisible(true);
+            this.setVisible(false);
 //            bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
 //            bw.write(name);
 //            bw.newLine();
@@ -139,7 +142,7 @@ public class Login extends javax.swing.JFrame {
 //            menu.show();
 //            }
         } catch (Exception ex) {
-            
+
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
@@ -163,21 +166,21 @@ public class Login extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-                    
+
                 }
             }
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(Login.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            
+
         } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(Login.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            
+
         } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(Login.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Login.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);

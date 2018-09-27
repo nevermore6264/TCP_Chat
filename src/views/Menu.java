@@ -15,6 +15,11 @@ import java.util.GregorianCalendar;
  */
 public class Menu extends javax.swing.JFrame {
 
+    public Menu(String userName) {
+        initComponents();
+        lblUserName.setText(userName);
+    }
+
     public void clock() {
         Thread clock = new Thread() {
             public void run() {
@@ -62,6 +67,7 @@ public class Menu extends javax.swing.JFrame {
         btnAcceptFriend = new javax.swing.JButton();
         btnLogout = new javax.swing.JButton();
         lblclock = new javax.swing.JLabel();
+        lblUserName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -106,6 +112,10 @@ public class Menu extends javax.swing.JFrame {
         lblclock.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
         lblclock.setForeground(new java.awt.Color(255, 0, 0));
 
+        lblUserName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblUserName.setForeground(new java.awt.Color(255, 0, 0));
+        lblUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -126,7 +136,9 @@ public class Menu extends javax.swing.JFrame {
                 .addComponent(lblclock, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblBanner)
-                .addGap(83, 83, 83)
+                .addGap(27, 27, 27)
+                .addComponent(lblUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnLogout)
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,7 +157,9 @@ public class Menu extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnLogout)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnLogout)
+                                .addComponent(lblUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(lblclock, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(66, 66, 66)
                 .addComponent(btnChat, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -178,15 +192,16 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnChatActionPerformed
 
     private void btnAddFriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFriendActionPerformed
-        AddFriend addFriend = new AddFriend();
+        String userName = lblUserName.getText();
+        AddFriend addFriend = new AddFriend(userName);
         this.setVisible(false);
         addFriend.setVisible(true);
     }//GEN-LAST:event_btnAddFriendActionPerformed
 
     private void btnAcceptFriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptFriendActionPerformed
-        AcceptFriend acceptFriend = new AcceptFriend();
+        String userName = lblUserName.getText();
+        new AcceptFriend(userName).setVisible(true);
         this.setVisible(false);
-        acceptFriend.setVisible(true);
     }//GEN-LAST:event_btnAcceptFriendActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
@@ -237,6 +252,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnShowHistory;
     private javax.swing.JLabel lblBanner;
+    private javax.swing.JLabel lblUserName;
     private javax.swing.JLabel lblclock;
     // End of variables declaration//GEN-END:variables
 }

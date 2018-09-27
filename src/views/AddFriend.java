@@ -5,9 +5,16 @@
  */
 package views;
 
+import api.CallSendInvitation;
 import api.CallUserApi;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import model.User;
 import model.UserView;
+import service.FriendService;
+import service.UserService;
 
 /**
  *
@@ -20,6 +27,16 @@ public class AddFriend extends javax.swing.JFrame {
      */
     public AddFriend() {
         initComponents();
+        getData();
+        this.setTitle("Kết bạn");
+        this.setResizable(false);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
+    public AddFriend(String userName) {
+        initComponents();
+        getData();
+        lblUserName.setText(userName);
         this.setTitle("Kết bạn");
         this.setResizable(false);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -35,10 +52,13 @@ public class AddFriend extends javax.swing.JFrame {
     private void initComponents() {
 
         btnBack = new javax.swing.JButton();
-        txtData = new javax.swing.JTextField();
         lblEnterName = new javax.swing.JLabel();
-        lblSearch = new javax.swing.JTextField();
+        txtSearch = new javax.swing.JTextField();
         btnSend = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblData = new javax.swing.JTable();
+        lblUserName = new javax.swing.JLabel();
+        btnLogout = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -46,13 +66,6 @@ public class AddFriend extends javax.swing.JFrame {
         btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackActionPerformed(evt);
-            }
-        });
-
-        txtData.setEditable(false);
-        txtData.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDataActionPerformed(evt);
             }
         });
 
@@ -67,6 +80,51 @@ public class AddFriend extends javax.swing.JFrame {
             }
         });
 
+        tblData.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "ID", "Tài khoản"
+            }
+        ));
+        tblData.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblDataMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblData);
+
+        lblUserName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblUserName.setForeground(new java.awt.Color(255, 0, 0));
+        lblUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
+        btnLogout.setText("Đăng xuất");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -75,32 +133,43 @@ public class AddFriend extends javax.swing.JFrame {
                 .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblEnterName, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnSend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)))
-                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                            .addComponent(txtSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+                        .addContainerGap(55, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnLogout)
+                        .addGap(34, 34, 34))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnLogout)
+                            .addComponent(lblUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(52, 52, 52)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblEnterName, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(28, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
@@ -114,20 +183,65 @@ public class AddFriend extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
-        // TODO add your handling code here:
+        FriendService friendService = FriendService.getInstance();
+        Pattern pattern3 = Pattern.compile("^[0-9]+$");
+        
+        UserService userService = UserService.getInstance();
+        int id = userService.findIdByName(lblUserName.getText());
+        
+        UserView userList = new CallUserApi().getListFriendApi();
+        CallSendInvitation callSendInvitation = new CallSendInvitation();
+        
+        if (userList.getItems().toString().contains(txtSearch.getText())) {
+            if (!txtSearch.getText().equals(lblUserName.getText())) {
+                Matcher matcher = pattern3.matcher(txtSearch.getText());
+                if (friendService.isExistInvitation(id, txtSearch.getText()) == false && matcher.matches() == false) {//Fix token và id
+                    callSendInvitation.sendPost(id, token, txtSearch.getText());
+                    JOptionPane.showMessageDialog(this, "Bạn đã gửi lời mời thành công");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Bạn đã gửi lời mời cho người bạn này");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Không thể gửi lời mời tới chính bạn");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Không có tài khoản này");
+        }
+
     }//GEN-LAST:event_btnSendActionPerformed
 
-    private void txtDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDataActionPerformed
+    private void tblDataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDataMouseClicked
+        chooseAccount();
+    }//GEN-LAST:event_tblDataMouseClicked
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        Login login = new Login();
+        this.setVisible(false);
+        login.setVisible(true);
+    }//GEN-LAST:event_btnLogoutActionPerformed
+
+    //Lấy toàn bộ user từ dtb
+    public void getData() {
+        DefaultTableModel model = (DefaultTableModel) tblData.getModel();
+        model.setRowCount(0);
         CallUserApi callUserApi = new CallUserApi();
-        String content = "Danh sách bạn bè";
         UserView userList = callUserApi.getListFriendApi();
-        content += "\n Mã       Tên";
-        String line = "";
         for (User user : userList.getItems()) {
-            line += user.getId() + "         " + user.getUserName() + "\n";
+            Object[] row = new Object[]{
+                user.getId(), user.getUserName()
+            };
+            model.addRow(row);
         }
-        txtData.setText(content + "\n" + line);
-    }//GEN-LAST:event_txtDataActionPerformed
+    }
+
+    //Chọn 1 user trên list 
+    public void chooseAccount() {
+        CallUserApi callUserApi = new CallUserApi();
+        UserView userList = callUserApi.getListFriendApi();
+        int index = tblData.getSelectedRow();
+        User user = userList.getItems().get(index);
+        txtSearch.setText(user.getUserName());
+    }
 
     /**
      * @param args the command line arguments
@@ -166,9 +280,13 @@ public class AddFriend extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnSend;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblEnterName;
-    private javax.swing.JTextField lblSearch;
-    private javax.swing.JTextField txtData;
+    private javax.swing.JLabel lblUserName;
+    private javax.swing.JTable tblData;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
+
 }
