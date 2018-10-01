@@ -5,6 +5,7 @@
  */
 package views;
 
+import api.CallAcceptInvitationAPI;
 import api.CallInvitationApi;
 import api.CallUserApi;
 import java.util.List;
@@ -153,9 +154,9 @@ public class AcceptFriend extends javax.swing.JFrame {
                 .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnLogout)
-                        .addComponent(lblUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lblUserName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnLogout)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -183,20 +184,24 @@ public class AcceptFriend extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAcceptActionPerformed
 
     public void acceptRequest() {
-        boolean check = false;
-        CallInvitationApi callInvitationApi = CallInvitationApi.getInstance();
-        for (User user : callInvitationApi.getListFriendApi(lblUserName.getText())) {
-            if (user.getUserName().equalsIgnoreCase(txtUsername.getText())) {
-                check = true;
+        try {
+            boolean check = false;
+            CallInvitationApi callInvitationApi = CallInvitationApi.getInstance();
+            for (User user : callInvitationApi.getListFriendApi(lblUserName.getText())) {
+                if (user.getUserName().equalsIgnoreCase(txtUsername.getText())) {
+                    check = true;
+                }
             }
-        }
-        if (check == true) {
-            UserService userService = UserService.getInstance();
-            int id = userService.findIdByName(lblUserName.getText());
-            callAcceptInvitationAPI.sendPut(id, token, txtUsername.getText());
-            JOptionPane.showMessageDialog(this, "Bạn và " + txtUsername.getText() + " đã trở thành bạn của nhau");
-        } else {
-            JOptionPane.showMessageDialog(this, "Tài khoản không được tìm thấy");
+            if (check == true) {
+                CallAcceptInvitationAPI callAcceptInvitationAPI = CallAcceptInvitationAPI.getInstance();
+                UserService userService = UserService.getInstance();
+                int id = userService.findIdByName(lblUserName.getText());
+                callAcceptInvitationAPI.sendPut(id, Information.token, txtUsername.getText());
+                JOptionPane.showMessageDialog(this, "Bạn và " + txtUsername.getText() + " đã trở thành bạn của nhau");
+            } else {
+                JOptionPane.showMessageDialog(this, "Tài khoản không được tìm thấy");
+            }
+        } catch (Exception e) {
         }
     }
 

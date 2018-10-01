@@ -21,7 +21,7 @@ public class Connects {
         String JDBC_DRIVER = "com.mysql.jdbc.Driver";
         String DB_URL = "jdbc:mysql://localhost/ChatTcp?useSSL=false";
         String DB_USER = "root";
-        String DB_PASSWORD = "123456";
+        String DB_PASSWORD = "dangkhoa1997";
         try {
             Class.forName(JDBC_DRIVER);
             con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);

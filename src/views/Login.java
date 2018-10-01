@@ -5,8 +5,18 @@
  */
 package views;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
+import service.UserService;
 
 /**
  *
@@ -14,10 +24,20 @@ import javax.swing.JOptionPane;
  */
 public class Login extends javax.swing.JFrame {
 
+    private Socket server;
+    private String token;
+    private UserService userService = UserService.getInstance();
+    private int userId;
+
     /**
      * Creates new form Login
      */
     public Login() {
+        try {
+            server = new Socket("localhost", 5055);
+        } catch (IOException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
         initComponents();
         this.setTitle("Đăng nhập");
         this.setResizable(false);
@@ -123,29 +143,53 @@ public class Login extends javax.swing.JFrame {
         }
         try {
             String userName = txtUsername.getText();
-            new Menu(userName).setVisible(true);
-            this.setVisible(false);
-//            bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
-//            bw.write(name);
-//            bw.newLine();
-//            bw.flush();
-//            BufferedReader br = new BufferedReader(new InputStreamReader(server.getInputStream()));
-//            token = br.readLine();
-//            if (token.equals("Login failed")) {
-//                System.out.println("Login failed! Please enter again your username");
-//                login();
-//            } else {
-//                id = userService.findIdByName(name);
-//                //System.out.println("Login success")
-//            Menu menu = new Menu();
-//            this.hide();
-//            menu.show();
-//            }
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
+            bw.write(userName);
+            bw.newLine();
+            bw.flush();
+            BufferedReader br = new BufferedReader(new InputStreamReader(server.getInputStream()));
+            token = br.readLine();
+            if (token.equals("Login failed")) {
+                System.out.println("Login failed! Please enter again your username");
+                txtUsername.setVisible(true);
+            } else {
+                userId = userService.findIdByName(userName);
+                System.out.println("Login success");
+                this.hide();
+                new Menu(userName, token).show();
+            }
         } catch (Exception ex) {
 
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
+    private void login(){
+        Pattern pattern = Pattern.compile("^[a-z0-9_]+");
+        if (!pattern.matcher(txtUsername.getText()).matches()) {
+            JOptionPane.showMessageDialog(this, "Tên bạn nhập sai định dạng");
+        }
+        try {
+            String userName = txtUsername.getText();
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
+            bw.write(userName);
+            bw.newLine();
+            bw.flush();
+            BufferedReader br = new BufferedReader(new InputStreamReader(server.getInputStream()));
+            token = br.readLine();
+            if (token.equals("Login failed")) {
+                System.out.println("Login failed! Please enter again your username");
+                login();
+            } else {
+                userId = userService.findIdByName(userName);
+                System.out.println("Login success");
+                this.hide();
+                new Menu().show();
+            }
+        } catch (Exception ex) {
+
+        }
+    }
+    
     private void btnRegisterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegisterMouseClicked
         Register register = new Register();
         this.setVisible(false);

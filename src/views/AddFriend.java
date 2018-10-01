@@ -155,9 +155,9 @@ public class AddFriend extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnLogout)
-                            .addComponent(lblUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblUserName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnLogout))
                         .addGap(52, 52, 52)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblEnterName, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -183,31 +183,33 @@ public class AddFriend extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
-        FriendService friendService = FriendService.getInstance();
-        Pattern pattern3 = Pattern.compile("^[0-9]+$");
-        
-        UserService userService = UserService.getInstance();
-        int id = userService.findIdByName(lblUserName.getText());
-        
-        UserView userList = new CallUserApi().getListFriendApi();
-        CallSendInvitation callSendInvitation = new CallSendInvitation();
-        
-        if (userList.getItems().toString().contains(txtSearch.getText())) {
-            if (!txtSearch.getText().equals(lblUserName.getText())) {
-                Matcher matcher = pattern3.matcher(txtSearch.getText());
-                if (friendService.isExistInvitation(id, txtSearch.getText()) == false && matcher.matches() == false) {//Fix token và id
-                    callSendInvitation.sendPost(id, token, txtSearch.getText());
-                    JOptionPane.showMessageDialog(this, "Bạn đã gửi lời mời thành công");
+        try {
+            FriendService friendService = FriendService.getInstance();
+            Pattern pattern3 = Pattern.compile("^[0-9]+$");
+
+            UserService userService = UserService.getInstance();
+            int id = userService.findIdByName(lblUserName.getText());
+
+            UserView userList = new CallUserApi().getListFriendApi();
+            CallSendInvitation callSendInvitation = new CallSendInvitation();
+
+            if (userList.getItems().toString().contains(txtSearch.getText())) {
+                if (!txtSearch.getText().equals(lblUserName.getText())) {
+                    Matcher matcher = pattern3.matcher(txtSearch.getText());
+                    if (friendService.isExistInvitation(id, txtSearch.getText()) == false && matcher.matches() == false) {//Fix token và id
+                        callSendInvitation.sendPost(id, Information.token, txtSearch.getText());
+                        JOptionPane.showMessageDialog(this, "Bạn đã gửi lời mời thành công");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Bạn đã gửi lời mời cho người bạn này");
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(this, "Bạn đã gửi lời mời cho người bạn này");
+                    JOptionPane.showMessageDialog(this, "Không thể gửi lời mời tới chính bạn");
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Không thể gửi lời mời tới chính bạn");
+                JOptionPane.showMessageDialog(this, "Không có tài khoản này");
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Không có tài khoản này");
+        } catch (Exception e) {
         }
-
     }//GEN-LAST:event_btnSendActionPerformed
 
     private void tblDataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDataMouseClicked
