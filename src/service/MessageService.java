@@ -32,10 +32,8 @@ public class MessageService {
 
     public boolean saveMessage(Message message) {
 
-        String sql = "INSERT INTO messages (content, time, sender_id, receiver_id) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO messages (content, create_date, sender_id, receiver_id) VALUES (?,?,?,?)";
         try {
-            //BasicDataSource basicDataSource = DataSource.getInstance().getBds();
-            //Connection con = basicDataSource.getConnection();
             Connection con = Connects.getConnect();
             PreparedStatement ps = con.prepareCall(sql);
             ps.setString(1, message.getContent());

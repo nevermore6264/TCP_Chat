@@ -49,7 +49,7 @@ public class ReadMessage {
                 } else {
                     //System.out.println("sended "+receiver+"-"+name+'-'+content);
                     messageSingleChat.sendMessageSingleChat(clients.get(receiver), name + " : " + content);
-                    //messageService.saveMessage(message1);
+                    messageService.saveMessage(message1);
                     return "send success";
                 }
             } else {

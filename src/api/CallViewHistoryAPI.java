@@ -25,12 +25,12 @@ public class CallViewHistoryAPI {
         return instance;
     }
 
-    public MessageView getListHistoryApi() {
+    public MessageView getListHistoryApi(String userName) {
         MessageView messageView = null;
         try {
             Gson gson = new Gson();
             String json = "";
-            URL url = new URL(String.valueOf("http://localhost:8080/api/messages/"));
+            URL url = new URL(String.valueOf("http://localhost:8080/api/messages?sender=" + userName));
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");

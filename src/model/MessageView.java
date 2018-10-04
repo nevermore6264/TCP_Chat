@@ -1,52 +1,50 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package model;
 
+import java.util.List;
+
+
+/**
+ *
+ * @author Admin
+ */
 public class MessageView {
-    private int id;
-    private String message;
-    private String time;
-    private String sender;
-    private String receiver;
+    private Integer total;
+    private List<MessageForm> items;
 
     public MessageView() {
     }
 
-    public int getId() {
-        return id;
+    public MessageView(Integer total, List<MessageForm> items) {
+        this.total = total;
+        this.items = items;
     }
 
-    public String getMessage() {
-        return message;
+    public Integer getTotal() {
+        return total;
     }
 
-    public String getTime() {
-        return time;
+    public void setTotal(Integer total) {
+        this.total = total;
     }
 
-    public String getSender() {
-        return sender;
+    public List<MessageForm> getItems() {
+        return items;
     }
 
-    public String getReceiver() {
-        return receiver;
+    public void setItems(List<MessageForm> items) {
+        this.items = items;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
+    @Override
+    public String toString() {
+        return "MessageView{" +
+                "total=" + total +
+                ", items=" + items +
+                '}';
     }
 }

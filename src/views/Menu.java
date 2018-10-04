@@ -206,7 +206,8 @@ public class Menu extends javax.swing.JFrame {
     }
     
     private void btnShowHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowHistoryActionPerformed
-        AcceptFriend acceptFriend = new AcceptFriend();
+        String userName = lblUserName.getText();
+        ViewHistory acceptFriend = new ViewHistory(userName);
         this.setVisible(false);
         acceptFriend.setVisible(true);
     }//GEN-LAST:event_btnShowHistoryActionPerformed
