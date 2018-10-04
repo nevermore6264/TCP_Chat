@@ -47,36 +47,36 @@ public class ClientHandle {
                     isLogin = checkLogin.checkLogin(clientName, message, client, bufferedWriter, clients);
                     System.out.println("User Login: " + clientName + "-" + isLogin);
                 } else {
-                    if (message.contains("@checkfriend:")) {
-                        String friendName = null;
-                        if (message.split(":").length > 1) {
-                            friendName = message.split(":")[1];
-                        }
-//                        if (friendName.equals(chatWith)) {
-//                            System.out.println("ok");
-//                            bufferedWriter.write("@ReceiverStatus:false");
-//                            bufferedWriter.newLine();
-//                            bufferedWriter.flush();
-//                        } else {
-                        if (clients.get(friendName) != null) {
-                            BufferedWriter bu = new BufferedWriter(new OutputStreamWriter(clients.get(friendName).getOutputStream()));
-                            bu.write("@getstatus:" + clientName);
-                            System.out.println("Lay ba tin :noi dung: @getstatus:" + clientName + " gui cho :" + friendName);
-                            bu.newLine();
-                            bu.flush();
-                        }
-                        //}
-                    } else if (message.contains("@return:")) {
-                        BufferedWriter buf = new BufferedWriter(new OutputStreamWriter(clients.get(message.split(":")[1]).getOutputStream()));
-                        String status = message.split(":")[2];
-                        System.out.println("Tra lai ban tin : " + status + "- gui cho :" + message.split(":")[1]);
-                        buf.write("@ReceiverStatus:" + status);
-                        buf.newLine();
-                        buf.flush();
-                    } else {
+//                    if (message.contains("@checkfriend:")) {
+//                        String friendName = null;
+//                        if (message.split(":").length > 1) {
+//                            friendName = message.split(":")[1];
+//                        }
+////                        if (friendName.equals(chatWith)) {
+////                            System.out.println("ok");
+////                            bufferedWriter.write("@ReceiverStatus:false");
+////                            bufferedWriter.newLine();
+////                            bufferedWriter.flush();
+////                        } else {
+//                        if (clients.get(friendName) != null) {
+//                            BufferedWriter bu = new BufferedWriter(new OutputStreamWriter(clients.get(friendName).getOutputStream()));
+//                            bu.write("@getstatus:" + clientName);
+//                            System.out.println("Lay ba tin :noi dung: @getstatus:" + clientName + " gui cho :" + friendName);
+//                            bu.newLine();
+//                            bu.flush();
+//                        }
+//                        //}
+//                    } else if (message.contains("@return:")) {
+//                        BufferedWriter buf = new BufferedWriter(new OutputStreamWriter(clients.get(message.split(":")[1]).getOutputStream()));
+//                        String status = message.split(":")[2];
+//                        System.out.println("Tra lai ban tin : " + status + "- gui cho :" + message.split(":")[1]);
+//                        buf.write("@ReceiverStatus:" + status);
+//                        buf.newLine();
+//                        buf.flush();
+//                    } else {
                         //displayListFriend.displayListFriend(name, client, bufferedWriter);
                         readMessage.readMessageSingleChat(message, clientName, client, clients);
-                    }
+                    
                 }
             }
         } catch (IOException e) {
