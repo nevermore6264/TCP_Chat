@@ -156,7 +156,7 @@ public class Login extends javax.swing.JFrame {
                 userId = userService.findIdByName(userName);
                 System.out.println("Login success");
                 this.hide();
-                new Menu(userName, token).show();
+                new Menu(userName, token, server).show();
             }
         } catch (Exception ex) {
 

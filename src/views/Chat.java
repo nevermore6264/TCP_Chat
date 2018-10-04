@@ -5,20 +5,47 @@
  */
 package views;
 
+import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Admin
  */
 public class Chat extends javax.swing.JFrame {
 
+    private String message;
+    private String friend;
+    private Socket server;
+    private BufferedWriter bw;
+    private BufferedReader br;
+
     /**
      * Creates new form Chat
      */
-    public Chat() {
+    public Chat(String friend, Socket server) {
+        this.server = server;
+        try {
+            bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
+            br = new BufferedReader(new InputStreamReader(server.getInputStream()));
+        } catch (IOException ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        receiver();
+        this.friend = friend;
         initComponents();
         this.setTitle("Trò chuyện");
         this.setResizable(false);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.taChat.setText("Start chat with " + friend + "\n");
     }
 
     /**
@@ -30,20 +57,31 @@ public class Chat extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        txtBoard = new javax.swing.JTextField();
         txtMessage = new javax.swing.JTextField();
         btnSend = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        taChat = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        txtBoard.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBoardActionPerformed(evt);
+        txtMessage.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtMessageKeyPressed(evt);
             }
         });
 
         btnSend.setText("Gửi tin nhắn");
+        btnSend.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSendActionPerformed(evt);
+            }
+        });
+        btnSend.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                btnSendKeyPressed(evt);
+            }
+        });
 
         btnBack.setText("Quay lại");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -52,20 +90,25 @@ public class Chat extends javax.swing.JFrame {
             }
         });
 
+        taChat.setEditable(false);
+        taChat.setColumns(20);
+        taChat.setRows(5);
+        taChat.setFocusable(false);
+        jScrollPane1.setViewportView(taChat);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(41, 41, 41)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtBoard)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(txtMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(31, 31, 31)
-                            .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31)
+                        .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -73,9 +116,9 @@ public class Chat extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtBoard, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtMessage)
                     .addComponent(btnSend, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
@@ -86,15 +129,61 @@ public class Chat extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtBoardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBoardActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBoardActionPerformed
+    public void chat() {
+        String mess = txtMessage.getText();
+        if ("".equals(mess.trim())) {
+            JOptionPane.showMessageDialog(null, "khong duoc de trong noi dung");
+        } else {
+            taChat.append("you :" + mess + "\n");
+            try {
+                mess = "@" + friend + " " + mess;
+                bw.write(mess);
+                bw.newLine();
+                bw.flush();
+            } catch (IOException ex) {
+                Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            txtMessage.setText("");
+        }
+    }
+
+    public void receiver() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        String mess = null;
+                        while ((mess = br.readLine()) != null) {
+                            taChat.append(mess + "\n");
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }.start();
+    }
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         Menu menu = new Menu();
         this.setVisible(false);
         menu.setVisible(true);
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
+        chat();
+    }//GEN-LAST:event_btnSendActionPerformed
+
+    private void btnSendKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnSendKeyPressed
+
+    }//GEN-LAST:event_btnSendKeyPressed
+
+    private void txtMessageKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMessageKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            chat();
+        }
+    }//GEN-LAST:event_txtMessageKeyPressed
 
     /**
      * @param args the command line arguments
@@ -126,7 +215,7 @@ public class Chat extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Chat().setVisible(true);
+                new Chat("", null).setVisible(true);
             }
         });
     }
@@ -134,7 +223,8 @@ public class Chat extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnSend;
-    private javax.swing.JTextField txtBoard;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea taChat;
     private javax.swing.JTextField txtMessage;
     // End of variables declaration//GEN-END:variables
 }

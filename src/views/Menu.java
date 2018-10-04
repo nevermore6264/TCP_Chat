@@ -6,8 +6,12 @@
 package views;
 
 import static java.lang.Thread.sleep;
+import java.net.Socket;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import javax.swing.JOptionPane;
+import model.Friend;
+import utils.DisplayFriend;
 
 /**
  *
@@ -16,12 +20,17 @@ import java.util.GregorianCalendar;
 public class Menu extends javax.swing.JFrame {
     
     private String userToken;
+    private Socket server;
+    private String userName;
     
-    public Menu(String userName, String userToken) {
+    public Menu(String userName, String userToken, Socket server) {
+        this.server = server;
+        this.userName = userName;
         initComponents();
         lblUserName.setText(userName);
         this.userToken = userToken;
     }
+    
     
     public void clock() {
         Thread clock = new Thread() {
@@ -182,6 +191,20 @@ public class Menu extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    public void chooseFriend() {
+        String friend = JOptionPane.showInputDialog("chon ban muon chat");
+        DisplayFriend displayFriend = DisplayFriend.getInstance();
+        for (Friend f : displayFriend.getListFriendApi(userName)) {
+            if (friend.equals(f.getUserName())) {
+                Chat chat = new Chat(friend, server);
+            this.setVisible(false);
+            chat.setVisible(true);
+            return;
+            }
+        }
+        chooseFriend();
+    }
+    
     private void btnShowHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowHistoryActionPerformed
         AcceptFriend acceptFriend = new AcceptFriend();
         this.setVisible(false);
@@ -189,9 +212,7 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnShowHistoryActionPerformed
 
     private void btnChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChatActionPerformed
-        Chat chat = new Chat();
-        this.setVisible(false);
-        chat.setVisible(true);
+        chooseFriend();
     }//GEN-LAST:event_btnChatActionPerformed
 
     private void btnAddFriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFriendActionPerformed
