@@ -6,6 +6,7 @@
 package model;
 
 import java.util.List;
+import model.User;
 
 
 /**

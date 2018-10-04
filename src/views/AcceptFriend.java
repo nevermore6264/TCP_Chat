@@ -21,6 +21,8 @@ import service.UserService;
  */
 public class AcceptFriend extends javax.swing.JFrame {
 
+    private String userToken;
+
     /**
      * Creates new form AcceptFriend
      */
@@ -31,11 +33,12 @@ public class AcceptFriend extends javax.swing.JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    public AcceptFriend(String userName) {
+    public AcceptFriend(String userName, String userToken) {
         initComponents();
         lblUserName.setText(userName);
         this.setTitle("Xác nhận lời mời kết bạn");
         this.setResizable(false);
+        this.userToken = userToken;
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         getData();
     }
@@ -181,6 +184,7 @@ public class AcceptFriend extends javax.swing.JFrame {
 
     private void btnAcceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptActionPerformed
         acceptRequest();
+        getData();
     }//GEN-LAST:event_btnAcceptActionPerformed
 
     public void acceptRequest() {
@@ -196,7 +200,7 @@ public class AcceptFriend extends javax.swing.JFrame {
                 CallAcceptInvitationAPI callAcceptInvitationAPI = CallAcceptInvitationAPI.getInstance();
                 UserService userService = UserService.getInstance();
                 int id = userService.findIdByName(lblUserName.getText());
-                callAcceptInvitationAPI.sendPut(id, Information.token, txtUsername.getText());
+                callAcceptInvitationAPI.sendPut(id, userToken, txtUsername.getText());
                 JOptionPane.showMessageDialog(this, "Bạn và " + txtUsername.getText() + " đã trở thành bạn của nhau");
             } else {
                 JOptionPane.showMessageDialog(this, "Tài khoản không được tìm thấy");

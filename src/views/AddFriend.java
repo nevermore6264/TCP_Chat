@@ -22,6 +22,8 @@ import service.UserService;
  */
 public class AddFriend extends javax.swing.JFrame {
 
+    private String userToken;
+
     /**
      * Creates new form AddFriend
      */
@@ -33,10 +35,11 @@ public class AddFriend extends javax.swing.JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    public AddFriend(String userName) {
+    public AddFriend(String userName, String userToken) {
         initComponents();
         getData();
         lblUserName.setText(userName);
+        this.userToken = userToken;
         this.setTitle("Kết bạn");
         this.setResizable(false);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -197,7 +200,7 @@ public class AddFriend extends javax.swing.JFrame {
                 if (!txtSearch.getText().equals(lblUserName.getText())) {
                     Matcher matcher = pattern3.matcher(txtSearch.getText());
                     if (friendService.isExistInvitation(id, txtSearch.getText()) == false && matcher.matches() == false) {//Fix token và id
-                        callSendInvitation.sendPost(id, Information.token, txtSearch.getText());
+                        callSendInvitation.sendPost(id, userToken, txtSearch.getText());
                         JOptionPane.showMessageDialog(this, "Bạn đã gửi lời mời thành công");
                     } else {
                         JOptionPane.showMessageDialog(this, "Bạn đã gửi lời mời cho người bạn này");

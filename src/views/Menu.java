@@ -16,13 +16,13 @@ import java.util.GregorianCalendar;
 public class Menu extends javax.swing.JFrame {
     
     private String userToken;
-
+    
     public Menu(String userName, String userToken) {
         initComponents();
         lblUserName.setText(userName);
         this.userToken = userToken;
     }
-
+    
     public void clock() {
         Thread clock = new Thread() {
             public void run() {
@@ -196,14 +196,14 @@ public class Menu extends javax.swing.JFrame {
 
     private void btnAddFriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFriendActionPerformed
         String userName = lblUserName.getText();
-        AddFriend addFriend = new AddFriend(userName);
+        AddFriend addFriend = new AddFriend(userName, userToken);
         this.setVisible(false);
         addFriend.setVisible(true);
     }//GEN-LAST:event_btnAddFriendActionPerformed
 
     private void btnAcceptFriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptFriendActionPerformed
         String userName = lblUserName.getText();
-        new AcceptFriend(userName).setVisible(true);
+        new AcceptFriend(userName, userToken).setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnAcceptFriendActionPerformed
 
