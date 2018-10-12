@@ -77,9 +77,9 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
+              <EmptySpace pref="71" max="32767" attributes="0"/>
               <Component id="btnChat" min="-2" pref="108" max="-2" attributes="0"/>
-              <EmptySpace pref="69" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnShowHistory" alignment="3" min="-2" pref="108" max="-2" attributes="0"/>
                   <Component id="btnAcceptFriend" alignment="3" min="-2" pref="108" max="-2" attributes="0"/>

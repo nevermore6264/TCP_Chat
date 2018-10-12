@@ -8,7 +8,13 @@ package views;
 import api.CallAcceptInvitationAPI;
 import api.CallInvitationApi;
 import api.CallUserApi;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.User;
@@ -23,6 +29,7 @@ public class AcceptFriend extends javax.swing.JFrame {
 
     private String userToken;
     private String name;
+    private Socket server;
 
     /**
      * Creates new form AcceptFriend
@@ -40,6 +47,18 @@ public class AcceptFriend extends javax.swing.JFrame {
         this.setTitle("Xác nhận lời mời kết bạn");
         this.setResizable(false);
         this.name = userName;
+        this.userToken = userToken;
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        getData();
+    }
+
+    AcceptFriend(String userName, String userToken, Socket server) {
+        initComponents();
+        lblUserName.setText(userName);
+        this.setTitle("Xác nhận lời mời kết bạn");
+        this.setResizable(false);
+        this.name = userName;
+        this.server = server;
         this.userToken = userToken;
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         getData();
@@ -217,6 +236,14 @@ public class AcceptFriend extends javax.swing.JFrame {
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         Login login = new Login();
+        try {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
+            bw.write("@logout " + name);
+            bw.newLine();
+            bw.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.setVisible(false);
         login.setVisible(true);
     }//GEN-LAST:event_btnLogoutActionPerformed

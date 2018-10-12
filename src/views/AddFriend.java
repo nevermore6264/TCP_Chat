@@ -7,6 +7,12 @@ package views;
 
 import api.CallSendInvitation;
 import api.CallUserApi;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
@@ -25,6 +31,7 @@ public class AddFriend extends javax.swing.JFrame {
     private String userToken;
 
     private String name;
+    private Socket server;
 
     /**
      * Creates new form AddFriend
@@ -43,6 +50,18 @@ public class AddFriend extends javax.swing.JFrame {
         lblUserName.setText(userName);
         this.userToken = userToken;
         this.name = userName;
+        this.setTitle("Kết bạn");
+        this.setResizable(false);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
+    AddFriend(String userName, String userToken, Socket server) {
+        initComponents();
+        getData();
+        lblUserName.setText(userName);
+        this.userToken = userToken;
+        this.name = userName;
+        this.server = this.server;
         this.setTitle("Kết bạn");
         this.setResizable(false);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -224,6 +243,14 @@ public class AddFriend extends javax.swing.JFrame {
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         Login login = new Login();
+        try {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
+            bw.write("@logout " + name);
+            bw.newLine();
+            bw.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.setVisible(false);
         login.setVisible(true);
     }//GEN-LAST:event_btnLogoutActionPerformed

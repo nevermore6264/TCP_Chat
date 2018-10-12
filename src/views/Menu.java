@@ -5,10 +5,15 @@
  */
 package views;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import static java.lang.Thread.sleep;
 import java.net.Socket;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import model.Friend;
 import utils.DisplayFriend;
@@ -178,9 +183,9 @@ public class Menu extends javax.swing.JFrame {
                                 .addComponent(lblUserName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(btnLogout))
                             .addComponent(lblclock, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(66, 66, 66)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
                 .addComponent(btnChat, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                .addGap(64, 64, 64)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnShowHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAcceptFriend, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -202,7 +207,7 @@ public class Menu extends javax.swing.JFrame {
             DisplayFriend displayFriend = DisplayFriend.getInstance();
             for (Friend f : displayFriend.getListFriendApi(userName)) {
                 if (friend.equals(f.getUserName())) {
-                    Chat chat = new Chat(userName,userToken,friend, server);
+                    Chat chat = new Chat(userName, userToken, friend, server);
                     this.setVisible(false);
                     chat.setVisible(true);
                     return;
@@ -228,19 +233,27 @@ public class Menu extends javax.swing.JFrame {
 
     private void btnAddFriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFriendActionPerformed
         String userName = lblUserName.getText();
-        AddFriend addFriend = new AddFriend(userName, userToken);
+        AddFriend addFriend = new AddFriend(userName, userToken,server);
         this.setVisible(false);
         addFriend.setVisible(true);
     }//GEN-LAST:event_btnAddFriendActionPerformed
 
     private void btnAcceptFriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptFriendActionPerformed
         String userName = lblUserName.getText();
-        new AcceptFriend(userName, userToken).setVisible(true);
+        new AcceptFriend(userName, userToken,server).setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnAcceptFriendActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         Login login = new Login();
+        try {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
+            bw.write("@logout " + userName);
+            bw.newLine();
+            bw.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.setVisible(false);
         login.setVisible(true);
     }//GEN-LAST:event_btnLogoutActionPerformed
