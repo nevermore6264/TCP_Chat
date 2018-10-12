@@ -18,11 +18,11 @@ import utils.DisplayFriend;
  * @author Admin
  */
 public class Menu extends javax.swing.JFrame {
-    
+
     private String userToken;
     private Socket server;
     private String userName;
-    
+
     public Menu(String userName, String userToken, Socket server) {
         this.server = server;
         this.userName = userName;
@@ -30,8 +30,13 @@ public class Menu extends javax.swing.JFrame {
         lblUserName.setText(userName);
         this.userToken = userToken;
     }
-    
-    
+
+    public Menu(String userName) {
+        this.userName = userName;
+        initComponents();
+        lblUserName.setText(userName);
+    }
+
     public void clock() {
         Thread clock = new Thread() {
             public void run() {
@@ -192,19 +197,24 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public void chooseFriend() {
-        String friend = JOptionPane.showInputDialog("chon ban muon chat");
-        DisplayFriend displayFriend = DisplayFriend.getInstance();
-        for (Friend f : displayFriend.getListFriendApi(userName)) {
-            if (friend.equals(f.getUserName())) {
-                Chat chat = new Chat(friend, server);
-            this.setVisible(false);
-            chat.setVisible(true);
-            return;
+        try {
+            String friend = JOptionPane.showInputDialog("Chọn bạn muốn chát");
+            DisplayFriend displayFriend = DisplayFriend.getInstance();
+            for (Friend f : displayFriend.getListFriendApi(userName)) {
+                if (friend.equals(f.getUserName())) {
+                    Chat chat = new Chat(userName,userToken,friend, server);
+                    this.setVisible(false);
+                    chat.setVisible(true);
+                    return;
+                }
             }
+            JOptionPane.showMessageDialog(null, "Không tìm thấy người bạn này");
+            //chooseFriend();
+        } catch (NullPointerException e) {
+
         }
-        chooseFriend();
     }
-    
+
     private void btnShowHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowHistoryActionPerformed
         String userName = lblUserName.getText();
         ViewHistory acceptFriend = new ViewHistory(userName);

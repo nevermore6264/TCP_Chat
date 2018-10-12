@@ -24,6 +24,8 @@ public class AddFriend extends javax.swing.JFrame {
 
     private String userToken;
 
+    private String name;
+
     /**
      * Creates new form AddFriend
      */
@@ -40,6 +42,7 @@ public class AddFriend extends javax.swing.JFrame {
         getData();
         lblUserName.setText(userName);
         this.userToken = userToken;
+        this.name = userName;
         this.setTitle("Kết bạn");
         this.setResizable(false);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -180,7 +183,7 @@ public class AddFriend extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        Menu menu = new Menu();
+        Menu menu = new Menu(name);
         this.setVisible(false);
         menu.setVisible(true);
     }//GEN-LAST:event_btnBackActionPerformed

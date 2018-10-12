@@ -27,6 +27,8 @@ public class Chat extends javax.swing.JFrame {
     private Socket server;
     private BufferedWriter bw;
     private BufferedReader br;
+    private String userName;
+    private String userToken;
 
     /**
      * Creates new form Chat
@@ -45,7 +47,27 @@ public class Chat extends javax.swing.JFrame {
         this.setTitle("Trò chuyện");
         this.setResizable(false);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.taChat.setText("Start chat with " + friend + "\n");
+        this.taChat.setText("Bắt đầu trò chuyện " + friend + "\n");
+    }
+
+    Chat(String userName, String userToken, String friend, Socket server) {
+        this.server = server;
+        try {
+            bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
+            br = new BufferedReader(new InputStreamReader(server.getInputStream()));
+        } catch (IOException ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        receiver();
+        this.friend = friend;
+        initComponents();
+        this.setTitle("Trò chuyện");
+        this.setResizable(false);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.taChat.setText("Bắt đầu trò chuyện " + friend + "\n");
+        this.userName = userName;
+        this.userToken = userToken;
+        lblUserName.setText(userName);
     }
 
     /**
@@ -62,26 +84,12 @@ public class Chat extends javax.swing.JFrame {
         btnBack = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         taChat = new javax.swing.JTextArea();
+        btnLogout = new javax.swing.JButton();
+        lblUserName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        txtMessage.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtMessageKeyPressed(evt);
-            }
-        });
-
         btnSend.setText("Gửi tin nhắn");
-        btnSend.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSendActionPerformed(evt);
-            }
-        });
-        btnSend.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                btnSendKeyPressed(evt);
-            }
-        });
 
         btnBack.setText("Quay lại");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -90,11 +98,20 @@ public class Chat extends javax.swing.JFrame {
             }
         });
 
-        taChat.setEditable(false);
         taChat.setColumns(20);
         taChat.setRows(5);
-        taChat.setFocusable(false);
         jScrollPane1.setViewportView(taChat);
+
+        btnLogout.setText("Đăng xuất");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+
+        lblUserName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblUserName.setForeground(new java.awt.Color(255, 0, 0));
+        lblUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -103,22 +120,31 @@ public class Chat extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnLogout))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(txtMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(31, 31, 31)
-                        .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1))
+                        .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lblUserName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnLogout)))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtMessage)
                     .addComponent(btnSend, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
@@ -132,7 +158,7 @@ public class Chat extends javax.swing.JFrame {
     public void chat() {
         String mess = txtMessage.getText();
         if ("".equals(mess.trim())) {
-            JOptionPane.showMessageDialog(null, "khong duoc de trong noi dung");
+            JOptionPane.showMessageDialog(null, "Không được để trống nội dung");
         } else {
             taChat.append("you :" + mess + "\n");
             try {
@@ -166,7 +192,7 @@ public class Chat extends javax.swing.JFrame {
     }
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        Menu menu = new Menu();
+        Menu menu = new Menu(userName,userToken,server);
         this.setVisible(false);
         menu.setVisible(true);
     }//GEN-LAST:event_btnBackActionPerformed
@@ -184,6 +210,12 @@ public class Chat extends javax.swing.JFrame {
             chat();
         }
     }//GEN-LAST:event_txtMessageKeyPressed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        Login login = new Login();
+        this.setVisible(false);
+        login.setVisible(true);
+    }//GEN-LAST:event_btnLogoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -222,8 +254,10 @@ public class Chat extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnSend;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblUserName;
     private javax.swing.JTextArea taChat;
     private javax.swing.JTextField txtMessage;
     // End of variables declaration//GEN-END:variables

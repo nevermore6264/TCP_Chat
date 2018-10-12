@@ -22,6 +22,7 @@ import service.UserService;
 public class AcceptFriend extends javax.swing.JFrame {
 
     private String userToken;
+    private String name;
 
     /**
      * Creates new form AcceptFriend
@@ -38,6 +39,7 @@ public class AcceptFriend extends javax.swing.JFrame {
         lblUserName.setText(userName);
         this.setTitle("Xác nhận lời mời kết bạn");
         this.setResizable(false);
+        this.name = userName;
         this.userToken = userToken;
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         getData();
@@ -177,7 +179,7 @@ public class AcceptFriend extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        Menu menu = new Menu();
+        Menu menu = new Menu(name);
         this.setVisible(false);
         menu.setVisible(true);
     }//GEN-LAST:event_btnBackActionPerformed
